@@ -1,4 +1,4 @@
-package com.speedChina.SRTMTerrianDownloader;
+package com.dy.SRTMTerrianDownloader;
 
 public class Downloader {
 	public static String[] targets = null;
