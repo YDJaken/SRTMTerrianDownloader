@@ -1,4 +1,4 @@
-package com.speedChina.SRTMTerrianDownloader;
+package com.dy.SRTMTerrianDownloader;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
