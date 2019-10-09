@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/SRTMTerrianDownloader.iml" filepath="$PROJECT_DIR$/.idea/SRTMTerrianDownloader.iml" />
       <module fileurl="file://$PROJECT_DIR$/SRTMTerrianDownloader.iml" filepath="$PROJECT_DIR$/SRTMTerrianDownloader.iml" />
     </modules>
   </component>
