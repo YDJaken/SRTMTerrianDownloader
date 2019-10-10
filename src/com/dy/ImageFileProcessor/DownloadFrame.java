@@ -52,7 +52,7 @@ public class DownloadFrame extends JFrame implements ActionListener {
 		StringBuilder build = new StringBuilder();
 		for (int i = 0; i < current.length; i++) {
 			if ((index + 1) * 2 == (i + 1)) {
-				build.append("目标目录" + (index + 1)).append("的当前状态为:").append(update).append("\n");
+				build.append("进程" + (index + 1)).append("的当前状态为:").append(update).append("\n");
 			} else {
 				if (current[i].equals("")) {
 					build.append("\n");

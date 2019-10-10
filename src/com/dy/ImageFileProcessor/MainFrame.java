@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		lable2.setBounds(50, 80, 200, 50);
 		fild2 = new JTextField();
 		fild2.setBounds(210, 90, 550, 30);
-		fild2.setText("4");
+		fild2.setText(Runtime.getRuntime().availableProcessors() * 2 + "");
 
 		JLabel lable3 = new JLabel("请输入最大允许高度差:");
 		lable3.setBounds(50, 130, 200, 50);
@@ -94,14 +94,14 @@ public class MainFrame extends JFrame implements ActionListener {
 								return -1;
 							}
 							LinkedList<File> fs = new LinkedList<File>();
-							for(int j = 0; j< imgs.length;j++) {
+							for (int j = 0; j < imgs.length; j++) {
 								fs.add(imgs[j]);
 							}
 							filesList.add(fs);
 						}
 					}
 				} else {
-					config.put("Config", MainFrame.loadConfig(target));
+					config.put("Config", MainFrame.loadConfig(target, config));
 				}
 			}
 			config.put("FileList", filesList);
@@ -111,22 +111,29 @@ public class MainFrame extends JFrame implements ActionListener {
 		return ret;
 	}
 
-	public static String[][] loadConfig(File configFile) {
+	public static LinkedList<String[]> loadConfig(File configFile, Map<String, Object> configration) {
 		String config = FileUtil.readString(configFile);
 		String[] sub = config.split("\r\n");
 		LinkedList<String[]> configs = new LinkedList<String[]>();
+		double sum = 0.0;
+		int count = 0;
 		for (int i = 0; i < sub.length; i++) {
 			String[] tmp = sub[i].split("\t");
 			try {
-				Double.parseDouble(tmp[1]);
+				double a = Double.parseDouble(tmp[3]);
+				sum += a;
+				count++;
 			} catch (NumberFormatException e) {
 				continue;
 			}
 			configs.add(tmp);
 		}
-		return configs.toArray(new String[sub.length][configs.size()]);
+		Double avg = sum / count;
+		configration.put("HeightAvg", avg);
+		return configs;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
@@ -152,11 +159,15 @@ public class MainFrame extends JFrame implements ActionListener {
 				return;
 			}
 			fild4.setText("");
+			Downloader.config = (LinkedList<String[]>) config.get("Config");
+			Downloader.targets = (LinkedList<LinkedList<File>>) config.get("FileList");
+			Downloader.HeightAvg = (Double) config.get("HeightAvg");
 			Downloader.fileBase = fileBase;
 			Downloader.threadNumber = threadNumber;
 			Downloader.maxHeightDiffer = Integer.parseInt(fild3.getText());
 			new DownloadFrame();
 			Downloader.start();
+			config.clear();
 			this.dispose();
 			break;
 		case "QUIT":

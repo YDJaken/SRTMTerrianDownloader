@@ -3,23 +3,12 @@ package com.dy.ImageFileProcessor;
 import java.io.File;
 import java.io.IOException;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import com.dy.Util.FileUtil;
-import com.dy.Util.HttpRequestUtil;
-import com.dy.Util.URLRoutingUtil;
-import com.dy.Util.Sup.Detect401;
-
 public class SRTMThread extends Thread {
 
 	private boolean stopFlag = false;
 	private boolean stillRuning = false;
 	private boolean error = false;
 	private int index = 0;
-	private File[] target;
 
 	public boolean stillRun() {
 		return this.stillRuning;
@@ -31,10 +20,6 @@ public class SRTMThread extends Thread {
 
 	public void setIndex(int index) {
 		this.index = index;
-	}
-
-	public void setTarget(File[] target) {
-		this.target = target;
 	}
 
 	@Override
@@ -51,6 +36,7 @@ public class SRTMThread extends Thread {
 		if (stopFlag == true)
 			return;
 		stillRuning = true;
+		File target = Downloader.requestFile();
 		try {
 			processImage();
 		} catch (IOException e) {
