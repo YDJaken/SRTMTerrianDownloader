@@ -87,21 +87,23 @@ public class MainFrame extends JFrame implements ActionListener {
 				if (target.isDirectory()) {
 					File[] imgs = FileUtil.loadsubFilesAsFile(target);
 					if (imgs != null) {
-						if (imgCount == 0) {
-							imgCount = imgs.length;
-						} else {
-							if (imgCount != imgs.length) {
-								return -1;
-							}
-							LinkedList<File> fs = new LinkedList<File>();
-							for (int j = 0; j < imgs.length; j++) {
-								fs.add(imgs[j]);
-							}
-							filesList.add(fs);
+						LinkedList<File> fs = new LinkedList<File>();
+						for (int j = 0; j < imgs.length; j++) {
+							fs.add(imgs[j]);
 						}
+						filesList.add(fs);
 					}
 				} else {
-					config.put("Config", MainFrame.loadConfig(target, config));
+					LinkedList<String[]> tmpcon = MainFrame.loadConfig(target, config);
+					config.put("Config", tmpcon);
+					imgCount = tmpcon.size();
+				}
+			}
+			if (imgCount == 0)
+				return -1;
+			for (int i = 0; i < filesList.size(); i++) {
+				if (imgCount != filesList.get(i).size()) {
+					return -1;
 				}
 			}
 			config.put("FileList", filesList);
