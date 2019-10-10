@@ -5,6 +5,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,11 +76,12 @@ public class MainFrame extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
-	public int canProcess(String fileBase) {
+	public int canProcess(String fileBase, Map<String, Object> config) {
 		int ret = 0;
 		File[] subFolders = FileUtil.loadsubFilesAsFile(new File(fileBase));
 		if (subFolders != null) {
 			int imgCount = 0;
+			LinkedList<LinkedList<File>> filesList = new LinkedList<LinkedList<File>>();
 			for (int i = 0; i < subFolders.length; i++) {
 				File target = subFolders[i];
 				if (target.isDirectory()) {
@@ -89,14 +93,38 @@ public class MainFrame extends JFrame implements ActionListener {
 							if (imgCount != imgs.length) {
 								return -1;
 							}
+							LinkedList<File> fs = new LinkedList<File>();
+							for(int j = 0; j< imgs.length;j++) {
+								fs.add(imgs[j]);
+							}
+							filesList.add(fs);
 						}
 					}
+				} else {
+					config.put("Config", MainFrame.loadConfig(target));
 				}
 			}
+			config.put("FileList", filesList);
 		} else {
 			return -2;
 		}
 		return ret;
+	}
+
+	public static String[][] loadConfig(File configFile) {
+		String config = FileUtil.readString(configFile);
+		String[] sub = config.split("\r\n");
+		LinkedList<String[]> configs = new LinkedList<String[]>();
+		for (int i = 0; i < sub.length; i++) {
+			String[] tmp = sub[i].split("\t");
+			try {
+				Double.parseDouble(tmp[1]);
+			} catch (NumberFormatException e) {
+				continue;
+			}
+			configs.add(tmp);
+		}
+		return configs.toArray(new String[sub.length][configs.size()]);
 	}
 
 	@Override
@@ -105,7 +133,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		case "DOWNLOAD":
 			String fileBase = fild1.getText();
 			int threadNumber = Integer.parseInt(fild2.getText());
-			int errorCode = canProcess(fileBase);
+			HashMap<String, Object> config = new HashMap<String, Object>();
+			int errorCode = canProcess(fileBase, config);
 			if (errorCode != 0) {
 				String reason;
 				switch (errorCode) {

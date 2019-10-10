@@ -34,8 +34,8 @@ public class DownloadFrame extends JFrame implements ActionListener {
 		scroll.setBounds(50, 50, 700, 200);
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		StringBuilder build = new StringBuilder();
-		for (int i = 0; i < Downloader.targets.length; i++) {
-			build.append("\n").append("目标目录" + (i + 1)).append("的当前状态为:").append("正在获取数据情况").append("\n");
+		for (int i = 0; i < Downloader.threadNumber; i++) {
+			build.append("\n").append("进程" + (i + 1)).append("的当前状态为:").append("正在获取数据情况").append("\n");
 		}
 
 		textArea.setText(build.toString());

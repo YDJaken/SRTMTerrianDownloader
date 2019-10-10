@@ -22,7 +22,9 @@
 hs_err_pid*
 
 bin/
-SRTMTerrianDownloader.iml
-/bin1/
-/.classpath
-/.project
+.classpath
+
+.project
+
+.idae/
+.settings/
