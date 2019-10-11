@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		lable2.setBounds(50, 80, 200, 50);
 		fild2 = new JTextField();
 		fild2.setBounds(210, 90, 550, 30);
-		fild2.setText(Runtime.getRuntime().availableProcessors() * 2 + "");
+		fild2.setText(Math.min(Runtime.getRuntime().availableProcessors() * 2, 20) + "");
 
 		JLabel lable3 = new JLabel("请输入最大允许高度差:");
 		lable3.setBounds(50, 130, 200, 50);
@@ -107,6 +107,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 			}
 			config.put("FileList", filesList);
+			config.put("TotalNumber", imgCount * filesList.size());
 		} else {
 			return -2;
 		}
@@ -161,6 +162,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				return;
 			}
 			fild4.setText("");
+			Downloader.totalNumber = (int) config.get("TotalNumber");
 			Downloader.config = (LinkedList<String[]>) config.get("Config");
 			Downloader.targets = (LinkedList<LinkedList<File>>) config.get("FileList");
 			Downloader.HeightAvg = (Double) config.get("HeightAvg");

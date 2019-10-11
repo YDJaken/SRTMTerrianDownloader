@@ -11,11 +11,14 @@ public class Downloader {
 	public static SRTMThread[] threads;
 	public static int maxHeightDiffer;
 	public static int threadNumber;
+	public static int totalNumber;
+	private static int complete;
 	private static String[] currentConfig = null;
 	private static LinkedList<File> pendingFiles = new LinkedList<File>();
 
 	public static void start() {
 		threads = new SRTMThread[threadNumber];
+		complete = 0;
 		for (int i = 0; i < threadNumber; i++) {
 			SRTMThread t = new SRTMThread();
 			t.setIndex(i);
@@ -53,6 +56,7 @@ public class Downloader {
 		if (pendingFiles.size() == 0) {
 			return null;
 		} else {
+			DownloadFrame.updateStatus(++complete, totalNumber);
 			return new FilePackage(pendingFiles.pop(), currentConfig);
 		}
 

@@ -9,11 +9,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class DownloadFrame extends JFrame implements ActionListener {
 
 	static JTextArea textArea;
+	static JTextField fild1;
 
 	public DownloadFrame() {
 		this.setTitle("ImageFileProcessor");
@@ -25,6 +27,10 @@ public class DownloadFrame extends JFrame implements ActionListener {
 		bu_quit.setActionCommand("QUIT");
 		bu_quit.addActionListener(this);
 
+		fild1 = new JTextField();
+		fild1.setFont(new Font("宋体", Font.BOLD, 20));
+		fild1.setBounds(50, 0, 700, 30);
+		
 		textArea = new JTextArea();
 		textArea.setFont(new Font("宋体", Font.BOLD, 20));
 		JScrollPane scroll = new JScrollPane(textArea);
@@ -42,6 +48,7 @@ public class DownloadFrame extends JFrame implements ActionListener {
 
 		this.getContentPane().add(scroll);
 		this.getContentPane().add(bu_quit);
+		this.getContentPane().add(fild1);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -64,6 +71,11 @@ public class DownloadFrame extends JFrame implements ActionListener {
 		textArea.setText(build.toString());
 	}
 
+	public synchronized static void updateStatus(int complete, int total) {
+		double ratio = (complete * 1.0) /(total * 1.0);
+		fild1.setText("已完成:" + complete + ", 总任务:" + total + ", 剩余:" + (total - complete) + ", 完成率:" + ratio);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub

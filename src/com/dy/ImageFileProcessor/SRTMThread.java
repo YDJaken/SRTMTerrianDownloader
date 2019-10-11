@@ -28,8 +28,8 @@ public class SRTMThread extends Thread {
 		File img = target.getFile();
 		String[] config = target.getConfig();
 		File parent = img.getParentFile();
-		File write = new File(parent.getAbsolutePath() + File.separatorChar + parent.getName() + "-" + img.getName());
-
+		new File(Downloader.fileBase + File.separatorChar + "geo-GT-" + parent.getName()).mkdirs();
+		File write = new File(Downloader.fileBase + File.separatorChar + "geo-GT-" + parent.getName() + File.separatorChar + parent.getName() + "-" + img.getName());
 		ImageUtill.setExifGPSTag(img, write, Double.parseDouble(config[2]), Double.parseDouble(config[1]),
 				Double.parseDouble(config[3]));
 	}
@@ -60,7 +60,7 @@ public class SRTMThread extends Thread {
 			if (error == false)
 				DownloadFrame.changeStatus(index, target.getFile().getAbsolutePath() + "处理完成。");
 		}
-		
+
 		DownloadFrame.changeStatus(index, "处理完成。");
 	}
 }
