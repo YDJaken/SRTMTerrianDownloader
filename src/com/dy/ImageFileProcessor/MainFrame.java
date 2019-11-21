@@ -23,6 +23,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	JTextField fild2;
 	JTextField fild3;
 	JTextField fild4;
+	JTextField fild5;
 
 	public MainFrame() {
 		this.setTitle("ImageFileProcessor");
@@ -38,26 +39,32 @@ public class MainFrame extends JFrame implements ActionListener {
 		bu_quit.setActionCommand("QUIT");
 		bu_quit.addActionListener(this);
 
+		JLabel lable4 = new JLabel("列表内项目个数:");
+		lable4.setBounds(50, 0, 100, 30);
+		fild5 = new JTextField();
+		fild5.setBounds(210, 0, 500, 30);
+		fild5.setText("4");
+
 		JLabel lable1 = new JLabel("请输入文件目录:");
 		lable1.setBounds(50, 30, 100, 50);
 		fild1 = new JTextField();
-		fild1.setBounds(210, 40, 550, 30);
+		fild1.setBounds(210, 40, 500, 30);
 		fild1.setText("/data/Image/");
 
 		JLabel lable2 = new JLabel("请输入线程个数:");
 		lable2.setBounds(50, 80, 200, 50);
 		fild2 = new JTextField();
-		fild2.setBounds(210, 90, 550, 30);
+		fild2.setBounds(210, 90, 500, 30);
 		fild2.setText(Math.min(Runtime.getRuntime().availableProcessors() * 2, 20) + "");
 
 		JLabel lable3 = new JLabel("请输入最大允许高度差:");
 		lable3.setBounds(50, 130, 200, 50);
 		fild3 = new JTextField();
-		fild3.setBounds(210, 140, 550, 30);
+		fild3.setBounds(210, 140, 500, 30);
 		fild3.setText("40");
 
 		fild4 = new JTextField();
-		fild4.setBounds(50, 190, 550, 50);
+		fild4.setBounds(50, 190, 500, 50);
 		fild4.setFont(new Font("黑体", Font.PLAIN, 35));
 		fild4.setForeground(Color.RED);
 		fild4.setBorder(null);
@@ -69,6 +76,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		this.getContentPane().add(lable3);
 		this.getContentPane().add(fild3);
 		this.getContentPane().add(fild4);
+		this.getContentPane().add(lable4);
+		this.getContentPane().add(fild5);
 		this.getContentPane().add(bu_quit);
 		this.getContentPane().add(print);
 		this.setLocationRelativeTo(null);
@@ -76,7 +85,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
-	public int canProcess(String fileBase, Map<String, Object> config) {
+	public int canProcess(String fileBase, Map<String, Object> config, int number) {
 		int ret = 0;
 		File[] subFolders = FileUtil.loadsubFilesAsFile(new File(fileBase));
 		if (subFolders != null) {
@@ -94,7 +103,10 @@ public class MainFrame extends JFrame implements ActionListener {
 						filesList.add(fs);
 					}
 				} else {
-					LinkedList<String[]> tmpcon = MainFrame.loadConfig(target, config);
+					LinkedList<String[]> tmpcon = MainFrame.loadConfig(target, config, number);
+					if(tmpcon == null) {
+						return -3;
+					}
 					config.put("Config", tmpcon);
 					imgCount = tmpcon.size();
 				}
@@ -114,7 +126,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		return ret;
 	}
 
-	public static LinkedList<String[]> loadConfig(File configFile, Map<String, Object> configration) {
+	public static LinkedList<String[]> loadConfig(File configFile, Map<String, Object> configration, int number) {
 		String config = FileUtil.readString(configFile);
 		String[] sub = config.split("\r\n");
 		LinkedList<String[]> configs = new LinkedList<String[]>();
@@ -122,6 +134,10 @@ public class MainFrame extends JFrame implements ActionListener {
 		int count = 0;
 		for (int i = 0; i < sub.length; i++) {
 			String[] tmp = sub[i].split("\t");
+			if (tmp.length != number) {
+				configs.clear();
+				return null;
+			}
 			try {
 				double a = Double.parseDouble(tmp[3]);
 				sum += a;
@@ -144,7 +160,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			String fileBase = fild1.getText();
 			int threadNumber = Integer.parseInt(fild2.getText());
 			HashMap<String, Object> config = new HashMap<String, Object>();
-			int errorCode = canProcess(fileBase, config);
+			int errorCode = canProcess(fileBase, config, Integer.parseInt(fild5.getText()));
 			if (errorCode != 0) {
 				String reason;
 				switch (errorCode) {
@@ -153,6 +169,9 @@ public class MainFrame extends JFrame implements ActionListener {
 					break;
 				case -1:
 					reason = "文件数目不匹配";
+					break;
+				case -3:
+					reason = "检测到列表内项目个数与设置不符,请检查配置文件是否正确。";
 					break;
 				default:
 					reason = "未知";
